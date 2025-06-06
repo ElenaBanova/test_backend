@@ -14,19 +14,6 @@ class ClinicControllers {
     }
   }
 
-  // public async getAllAggregate(
-  //   req: Request,
-  //   res: Response,
-  //   next: NextFunction,
-  // ) {
-  //   try {
-  //     const data = await clinicRepository.getAllAggregate();
-  //     res.status(StatusCodesEnum.OK).json(data);
-  //   } catch (e) {
-  //     next(e);
-  //   }
-  // }
-
   public async create(req: Request, res: Response, next: NextFunction) {
     try {
       const clinic = req.body as IClinicCreateDTO;

@@ -9,10 +9,6 @@ class UserService {
     return userRepository.getAll();
   }
 
-  // public create(user: IUserCreateDTO): Promise<IUser> {
-  //   return userRepository.create(user);
-  // }
-
   public async getById(id: string): Promise<IUser> {
     const user = await userRepository.getById(id);
 
