@@ -26,7 +26,6 @@ router.put(
 router.get(
   "/:id",
   authMiddleware.checkAccessToken,
-  authMiddleware.isAdmin,
   commonMiddleware.isIdValid("id"),
   clinicControllers.getById,
 );

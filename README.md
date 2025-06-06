@@ -37,6 +37,9 @@ to the repository (e.g. SSH keys or credentials).
 Now you can get acquainted with the capabilities of the project by going to `http://localhost:80/api/docs` in your
 browser.
 
+!!!Important. When creating medical services, mandatory validation is required by `medService.enum.ts`. File path
+`/src/enums/medService.enum.ts`.
+
 Also for backend and frontend one `localhost:80` is set. You can find more details by going to the file `nginx.config`.
 
 The project is completely ready for the design of the frontend part.
@@ -50,6 +53,5 @@ New features are already in development:
     * professional biographies
     * work schedule
     * patient reviews
-
 
 The following are participating in the development of the project: `Okten School` & your student `Banova Olena`

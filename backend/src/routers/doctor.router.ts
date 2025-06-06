@@ -7,7 +7,7 @@ import { DoctorValidator } from "../validators/doctor.validator";
 
 const router = Router();
 
-router.get("/", authMiddleware.checkAccessToken, doctorController.getAll);
+router.get("/", doctorController.getAll);
 router.post(
   "/:id",
   authMiddleware.checkAccessToken,
