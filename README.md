@@ -21,6 +21,12 @@ If the repository is already cloned, you can open it via File > Open and select 
 If you have any difficulties, make sure that Git is installed and configured on your computer, and that you have access
 to the repository (e.g. SSH keys or credentials).
 
+##Link to postman
+collection: https://www.dropbox.com/scl/fi/3qnasgh4kmits7v2veop7/test-backend.postman_collection.json?rlkey=oeqi99thalgfnpsq3nfgq6b8o&dl=0
+
+#Link to dump
+mongodb: https://www.dropbox.com/scl/fi/ritkscbwny1hyw50bx41h/mongo_dump.zip?rlkey=3xgj2se5d17yh7sq7w32g4907&dl=0
+
 7. Connecting node to the project : File > Settings > Languages & Frameworks > Node.js > put a tick next to Coding
    assistance for Node.js > choose our project > OK > Apply > OK.
 8. Connecting eslint to the project : File > Settings > and we enter it in the search engine: ESLint > put a tick next
