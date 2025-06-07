@@ -14,6 +14,15 @@ class MedService_Controller {
     }
   }
 
+  public async getAllGen(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = await medService_Service.getAllGen(req.query);
+      res.status(StatusCodesEnum.OK).json(data);
+    } catch (e) {
+      next(e);
+    }
+  }
+
   public async create(req: Request, res: Response, next: NextFunction) {
     try {
       const { id: _doctorId } = req.params;

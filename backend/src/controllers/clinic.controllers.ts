@@ -14,11 +14,19 @@ class ClinicControllers {
     }
   }
 
+  public async getAllGen(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = await clinicService.getAllGen(req.query);
+      res.status(StatusCodesEnum.OK).json(data);
+    } catch (e) {
+      next(e);
+    }
+  }
+
   public async create(req: Request, res: Response, next: NextFunction) {
     try {
       const clinic = req.body as IClinicCreateDTO;
       const data = await clinicService.create(clinic);
-      console.log(data);
       res.status(StatusCodesEnum.CREATED).json(data);
     } catch (e) {
       next(e);

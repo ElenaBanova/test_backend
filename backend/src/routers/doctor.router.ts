@@ -7,7 +7,19 @@ import { DoctorValidator } from "../validators/doctor.validator";
 
 const router = Router();
 
-router.get("/", doctorController.getAll);
+router.get(
+  "/",
+  authMiddleware.checkAccessToken,
+  authMiddleware.isAdmin,
+  commonMiddleware.query(DoctorValidator.query),
+  doctorController.getAll,
+);
+router.get(
+  "/gen",
+  authMiddleware.checkAccessToken,
+  commonMiddleware.query(DoctorValidator.query),
+  doctorController.getAllGen,
+);
 router.post(
   "/:id",
   authMiddleware.checkAccessToken,

@@ -1,5 +1,6 @@
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { ApiError } from "../errors/api.errors";
+import { IMedServiceGen } from "../interfaces/IMedServiceGen";
 import {
   IMedService,
   IMedServiceCreateDTO,
@@ -11,6 +12,10 @@ import { doctorService } from "./doctor.service";
 class MedService_Service {
   public getAll(query: IMedServiceQuery): Promise<IMedService[]> {
     return medService_Repository.getAll(query);
+  }
+
+  public getAllGen(query: IMedServiceQuery): Promise<IMedServiceGen[]> {
+    return medService_Repository.getAllGen(query);
   }
 
   public async create(

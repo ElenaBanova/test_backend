@@ -5,11 +5,16 @@ import {
   IClinicCreateDTO,
   IClinicQuery,
 } from "../interfaces/clinic.interface";
+import { IClinicGen } from "../interfaces/IClinicGen";
 import { clinicRepository } from "../repositories/clinic.repository";
 
 class ClinicService {
   public getAll(query: IClinicQuery): Promise<IClinic[]> {
     return clinicRepository.getAll(query);
+  }
+
+  public getAllGen(query: IClinicQuery): Promise<IClinicGen[]> {
+    return clinicRepository.getAllGen(query);
   }
 
   public create(clinic: IClinicCreateDTO): Promise<IClinic> {

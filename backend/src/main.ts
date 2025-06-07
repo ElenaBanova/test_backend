@@ -3,11 +3,11 @@
 
 import express, { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
+import swaggerUI from "swagger-ui-express";
 
-// import swaggerUI from "swagger-ui-express";
 import { config } from "./configs/config";
-// import { swaggerDocument } from "./configs/swagger.config";
-// import { cronRunner } from "./crons";
+import { swaggerDocument } from "./configs/swagger.config";
+import { cronRunner } from "./crons";
 import { ApiError } from "./errors/api.errors";
 import { apiRouter } from "./routers/api.router";
 
@@ -15,7 +15,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 app.use("/", apiRouter);
 
 app.use(
@@ -49,14 +49,10 @@ const dbConnection = async () => {
 const start = async () => {
   try {
     await dbConnection();
-    app.listen(
-      config.PORT,
-      // async
-      () => {
-        console.log(`Server listening on ${config.PORT}`);
-        // await cronRunner();
-      },
-    );
+    app.listen(config.PORT, async () => {
+      console.log(`Server listening on ${config.PORT}`);
+      await cronRunner();
+    });
   } catch (e) {
     console.log(e);
   }

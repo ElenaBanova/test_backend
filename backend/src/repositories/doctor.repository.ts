@@ -6,6 +6,7 @@ import {
   IDoctorQuery,
   IDoctorUpdate,
 } from "../interfaces/doctor.interface";
+import { IDoctorGen } from "../interfaces/IDoctorGen";
 import { Doctor } from "../models/doctor.model";
 
 class DoctorRepository {
@@ -30,6 +31,78 @@ class DoctorRepository {
     }
 
     return Doctor.find(filterObject).sort(query.order);
+  }
+
+  public getAllGen(query: IDoctorQuery): Promise<IDoctorGen[]> {
+    const filterObjectGen: FilterQuery<IDoctor> = {};
+
+    if (query.name) {
+      filterObjectGen.name = { $regex: query.name, $options: "i" };
+    }
+    if (query.surname) {
+      filterObjectGen.surname = { $regex: query.surname, $options: "i" };
+    }
+    if (query.phoneNumber) {
+      filterObjectGen.phoneNumber = {
+        $regex: query.phoneNumber,
+        $options: "i",
+      };
+    }
+    if (query.email) {
+      filterObjectGen.email = { $regex: query.email, $options: "i" };
+    }
+
+    const orderObject = {};
+    if (query.order) {
+      if (query.order.startsWith("-")) {
+        orderObject[query.order.slice(1)] = -1;
+      } else {
+        orderObject[query.order] = 1;
+      }
+    }
+
+    return Doctor.aggregate([
+      {
+        $match: filterObjectGen,
+      },
+      {
+        $sort: orderObject,
+      },
+      {
+        $lookup: {
+          from: "clinics",
+          localField: "_clinicId",
+          foreignField: "_id",
+          as: "clinicInfo",
+        },
+      },
+      {
+        $unwind: "$clinicInfo",
+      },
+      {
+        $lookup: {
+          from: "medservices",
+          localField: "_id",
+          foreignField: "_doctorId",
+          as: "med_ServiceInfo",
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          _clinicId: 0,
+          createdAt: 0,
+          updatedAt: 0,
+          "clinicInfo._id": 0,
+          "clinicInfo.createdAt": 0,
+          "clinicInfo.updatedAt": 0,
+          "med_ServiceInfo._id": 0,
+          "med_ServiceInfo._doctorId": 0,
+          "med_ServiceInfo.createdAt": 0,
+          "med_ServiceInfo.updatedAt": 0,
+        },
+      },
+    ]);
   }
 
   public create(doctor: IDoctorCreateDTO): Promise<IDoctor> {

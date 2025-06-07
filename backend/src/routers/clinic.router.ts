@@ -7,7 +7,20 @@ import { ClinicValidator } from "../validators/clinic.validator";
 
 const router = Router();
 
-router.get("/", authMiddleware.checkAccessToken, clinicControllers.getAll);
+router.get(
+  "/",
+  authMiddleware.checkAccessToken,
+  authMiddleware.isAdmin,
+  commonMiddleware.query(ClinicValidator.query),
+  clinicControllers.getAll,
+);
+router.get(
+  "/gen",
+  authMiddleware.checkAccessToken,
+  commonMiddleware.query(ClinicValidator.query),
+  clinicControllers.getAllGen,
+);
+
 router.post(
   "/",
   authMiddleware.checkAccessToken,

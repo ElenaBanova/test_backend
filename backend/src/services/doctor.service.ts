@@ -5,12 +5,17 @@ import {
   IDoctorCreateDTO,
   IDoctorQuery,
 } from "../interfaces/doctor.interface";
+import { IDoctorGen } from "../interfaces/IDoctorGen";
 import { doctorRepository } from "../repositories/doctor.repository";
 import { clinicService } from "./clinic.service";
 
 class DoctorService {
   public getAll(query: IDoctorQuery): Promise<IDoctor[]> {
     return doctorRepository.getAll(query);
+  }
+
+  public getAllGen(query: IDoctorQuery): Promise<IDoctorGen[]> {
+    return doctorRepository.getAllGen(query);
   }
 
   public async create(doctor: IDoctorCreateDTO, _id: string): Promise<IDoctor> {
