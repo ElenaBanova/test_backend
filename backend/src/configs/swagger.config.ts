@@ -396,7 +396,9 @@ const swaggerDocument: OpenAPIV3.Document = {
       get: {
         tags: ["Clinic"],
         summary: "Get all clinics with pagination and filters",
-        security: [{ bearerAuth: [] }, { roleUser: ["Admin"] }],
+        security: [{ bearerAuth: [] }],
+        description:
+          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
         parameters: [
           {
             name: "name",
@@ -436,7 +438,9 @@ const swaggerDocument: OpenAPIV3.Document = {
       post: {
         tags: ["Clinic"],
         summary: "Create new clinic",
-        security: [{ bearerAuth: [] }, { roleUser: ["Admin"] }],
+        security: [{ bearerAuth: [] }],
+        description:
+          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
         requestBody: {
           required: true,
           content: {
@@ -475,7 +479,9 @@ const swaggerDocument: OpenAPIV3.Document = {
       patch: {
         tags: ["Clinic"],
         summary: "Update clinic by Id",
-        security: [{ bearerAuth: [] }, { roleUser: ["Admin"] }],
+        security: [{ bearerAuth: [] }],
+        description:
+          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
         requestBody: {
           content: {
             "application json": {
@@ -519,7 +525,9 @@ const swaggerDocument: OpenAPIV3.Document = {
       delete: {
         tags: ["Clinic"],
         summary: "Delete clinic by Id",
-        security: [{ bearerAuth: [] }, { roleUser: ["Admin"] }],
+        security: [{ bearerAuth: [] }],
+        description:
+          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
         parameters: [
           {
             name: "clinicId",
@@ -534,7 +542,9 @@ const swaggerDocument: OpenAPIV3.Document = {
       get: {
         tags: ["Clinic"],
         summary: "Get clinic by Id",
-        security: [{ bearerAuth: [] }, {}],
+        security: [{ bearerAuth: [] }],
+        description:
+          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
         parameters: [
           {
             name: "clinicId",
@@ -625,7 +635,9 @@ const swaggerDocument: OpenAPIV3.Document = {
       get: {
         tags: ["Doctor"],
         summary: "Get all doctors with pagination and filters",
-        security: [{ bearerAuth: [] }, { roleUser: ["Admin"] }],
+        security: [{ bearerAuth: [] }],
+        description:
+          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
         requestBody: {
           content: {
             "application json": {
@@ -788,7 +800,9 @@ const swaggerDocument: OpenAPIV3.Document = {
       post: {
         tags: ["Doctor"],
         summary: "Create new doctor",
-        security: [{ bearerAuth: [] }, { roleUser: ["Admin"] }],
+        security: [{ bearerAuth: [] }],
+        description:
+          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
         requestBody: {
           required: true,
           content: {
@@ -841,7 +855,9 @@ const swaggerDocument: OpenAPIV3.Document = {
       put: {
         tags: ["Doctor"],
         summary: "Update doctor",
-        security: [{ bearerAuth: [] }, { roleUser: ["Admin"] }],
+        security: [{ bearerAuth: [] }],
+        description:
+          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
         requestBody: {
           content: {
             "application json": {
@@ -892,7 +908,9 @@ const swaggerDocument: OpenAPIV3.Document = {
       get: {
         tags: ["Doctor"],
         summary: "Get by id doctor",
-        security: [{ bearerAuth: [] }, { roleUser: ["Admin"] }],
+        security: [{ bearerAuth: [] }],
+        description:
+          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
         parameters: [
           {
             name: "isId : doctorId",
@@ -928,7 +946,9 @@ const swaggerDocument: OpenAPIV3.Document = {
       delete: {
         tags: ["Doctor"],
         summary: "Delete doctor",
-        security: [{ bearerAuth: [] }, { roleUser: ["Admin"] }],
+        security: [{ bearerAuth: [] }],
+        description:
+          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
         parameters: [
           {
             name: "isId : doctorId",
@@ -945,7 +965,9 @@ const swaggerDocument: OpenAPIV3.Document = {
       get: {
         tags: ["Medical Service"],
         summary: "Get all medical service",
-        security: [{ bearerAuth: [] }, { roleUser: ["Admin"] }],
+        security: [{ bearerAuth: [] }],
+        description:
+          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
         requestBody: {
           content: {
             "application json": {
@@ -1067,9 +1089,11 @@ const swaggerDocument: OpenAPIV3.Document = {
     },
     "/services/{idId}": {
       post: {
-        tags: ["Medical service"],
+        tags: ["Medical Service"],
         summary: "Create new medical service",
-        security: [{ bearerAuth: [] }, { roleUser: ["Admin"] }],
+        security: [{ bearerAuth: [] }],
+        description:
+          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
         requestBody: {
           required: true,
           content: {
@@ -1115,9 +1139,11 @@ const swaggerDocument: OpenAPIV3.Document = {
         },
       },
       put: {
-        tags: ["Medical service"],
+        tags: ["Medical Service"],
         summary: "Update medical service",
-        security: [{ bearerAuth: [] }, { roleUser: ["Admin"] }],
+        security: [{ bearerAuth: [] }],
+        description:
+          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
         requestBody: {
           content: {
             "application json": {
@@ -1162,7 +1188,9 @@ const swaggerDocument: OpenAPIV3.Document = {
       get: {
         tags: ["Medical Service"],
         summary: "Get by id medical service",
-        security: [{ bearerAuth: [] }, { roleUser: ["Admin"] }],
+        security: [{ bearerAuth: [] }],
+        description:
+          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
         parameters: [
           {
             name: "idId : serviceId",
@@ -1194,7 +1222,9 @@ const swaggerDocument: OpenAPIV3.Document = {
       delete: {
         tags: ["Medical Service"],
         summary: "Delete by id medical service",
-        security: [{ bearerAuth: [] }, { roleUser: ["Admin"] }],
+        security: [{ bearerAuth: [] }],
+        description:
+          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
         parameters: [
           {
             name: "idId : serviceId",
