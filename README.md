@@ -31,7 +31,11 @@ to the repository (e.g. SSH keys or credentials).
    information.
 10. Create a file called `.env` in the root of the project.
 11. We copy the `.env.example` file component into it and fill in all the fields after the `=` sign.
-    Note: fill in the MONGO_URI string in the following format: mongodb://<_username_>:<_password_>@db:27017/<_database_>. Use the data from the `.env.db` file to fill it in.
+
+    Note:
+Fill in the MONGO_URI string in the following format: mongodb://<_username_>:<_password_>@db:27017/<_database_>. Use the data from the `.env.db` file to fill it in. 
+On this project the default PORT is 5000. If it is changed, you should also replace it in the docker-compose.yml and nginx.conf files.
+Fill in the LIFETIME string in the following format: "20 minutes".
 12. Next, you need to install the dependencies from the `package-json` file. To do this, enter `cd backend` (go to the
     desired directory) and `npm i` in the 'bash' terminal.
 13. After successful completion of the installation, before launching the project itself, Docker needs to be launched.
@@ -47,15 +51,21 @@ Steps to add dump mongodb to project:
    - on Windows: Command Prompt (CMD), PowerShell or Windows Terminal
    - on macOS or Linux: Terminal (e.g. Terminal.app on macOS or any terminal on Linux)
 3. We will need the ID of the mongodb container of this project. This command will display a list of running Docker containers on your system:
+
 `docker ps`
+
 4. Copy dump mongodb to our container:
+
 `docker cp /path/to/your/dump <_ID_docker_container_>:/dump`
+
 Where:
 /path/to/your/dump — this is the local path on the host where the dump is stored; 
 <_ID_docker_container_> - insert the obtained result after completing point 3; 
 /dump - the name of the directory in the container to which the dump will be copied.
 5. Perform a restore inside the container:
+
 `docker exec -it <_ID_docker_container_> mongorestore -u <_username_> -p <_password_> /dump`
+
 Where <_username_> and <_password_> are taken from the .env.db file, which is located in the root of the project.
 6. The database has been restored, let's move on to the next step.
 
@@ -69,7 +79,6 @@ Steps to connect a collection to Postman:
 
 1. Launch Postman.
 2. At the top of the list of collections, click "Import" and select the desired file.
-3. 
 
 ### The Backend-part-of-the-project-for-an-informational-website-for-medical-services is completely ready for work!
 
