@@ -1,10 +1,10 @@
 import joi from "joi";
 
 import { BaseQueryOrderEnum } from "../enums/base-query-order.enum";
-import { MedServiceEnum } from "../enums/medService.enum";
+import { RegexEnum } from "../enums/regex.enum";
 
 export class MedServiceValidator {
-  private static name = joi.string().valid(...Object.values(MedServiceEnum));
+  private static name = joi.string().trim().regex(RegexEnum.CLINIC_NAME);
 
   public static create = joi.object({
     name: this.name.required(),

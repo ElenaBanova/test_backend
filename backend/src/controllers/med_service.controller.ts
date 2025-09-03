@@ -25,9 +25,8 @@ class MedService_Controller {
 
   public async create(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id: _doctorId } = req.params;
       const service = req.body as IMedServiceCreateDTO;
-      const data = await medService_Service.create(service, _doctorId);
+      const data = await medService_Service.create(service);
       res.status(StatusCodesEnum.CREATED).json(data);
     } catch (e) {
       next(e);

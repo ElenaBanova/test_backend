@@ -3,7 +3,6 @@ import { IBase } from "./base.interface";
 interface IMedService extends IBase {
   _id: string;
   name: string;
-  _doctorId: string;
 }
 
 interface IMedServiceQuery {
@@ -11,6 +10,6 @@ interface IMedServiceQuery {
   order?: string;
 }
 
-type IMedServiceCreateDTO = Pick<IMedService, "name" | "_doctorId">;
+type IMedServiceCreateDTO = Pick<IMedService, "name">;
 
 export { IMedService, IMedServiceCreateDTO, IMedServiceQuery };

@@ -2,11 +2,10 @@ import { FilterQuery } from "mongoose";
 
 import {
   IDoctor,
-  IDoctorCreateDTO,
+  IDoctorCreateOrUpdate,
   IDoctorQuery,
-  IDoctorUpdate,
 } from "../interfaces/doctor.interface";
-import { IDoctorGen } from "../interfaces/IDoctorGen";
+import { IDoctorGen } from "../interfaces/IDoctorGen.interface";
 import { Doctor } from "../models/doctor.model";
 
 class DoctorRepository {
@@ -70,46 +69,64 @@ class DoctorRepository {
       },
       {
         $lookup: {
-          from: "clinics",
-          localField: "_clinicId",
-          foreignField: "_id",
-          as: "clinicInfo",
+          from: "complexes",
+          localField: "_id",
+          foreignField: "_doctorId",
+          as: "doctor",
         },
       },
       {
-        $unwind: "$clinicInfo",
+        $lookup: {
+          from: "clinics",
+          localField: "doctor._clinicId",
+          foreignField: "_id",
+          as: "clinics",
+        },
       },
       {
         $lookup: {
           from: "medservices",
-          localField: "_id",
-          foreignField: "_doctorId",
-          as: "med_ServiceInfo",
+          localField: "doctor._medServiceId",
+          foreignField: "_id",
+          as: "med_Services",
         },
       },
       {
         $project: {
           _id: 0,
-          _clinicId: 0,
-          createdAt: 0,
-          updatedAt: 0,
-          "clinicInfo._id": 0,
-          "clinicInfo.createdAt": 0,
-          "clinicInfo.updatedAt": 0,
-          "med_ServiceInfo._id": 0,
-          "med_ServiceInfo._doctorId": 0,
-          "med_ServiceInfo.createdAt": 0,
-          "med_ServiceInfo.updatedAt": 0,
+          name: 1,
+          surname: 1,
+          phoneNumber: 1,
+          email: 1,
+          clinics: {
+            $map: {
+              input: "$clinics",
+              as: "c",
+              in: {
+                name: "$$c.name",
+                med_Services: {
+                  $map: {
+                    input: "$med_Services",
+                    as: "m",
+                    in: "$$m.name",
+                  },
+                },
+              },
+            },
+          },
         },
       },
     ]);
   }
 
-  public create(doctor: IDoctorCreateDTO): Promise<IDoctor> {
+  public create(doctor: IDoctorCreateOrUpdate): Promise<IDoctor> {
     return Doctor.create(doctor);
   }
 
-  public updateById(id: string, doctor: IDoctorUpdate): Promise<IDoctor> {
+  public updateById(
+    id: string,
+    doctor: IDoctorCreateOrUpdate,
+  ): Promise<IDoctor> {
     return Doctor.findByIdAndUpdate(id, doctor, { new: true });
   }
 
@@ -119,6 +136,10 @@ class DoctorRepository {
 
   public deleteById(id: string): Promise<void> {
     return Doctor.findByIdAndDelete(id);
+  }
+
+  public getByOne(key: string, value: string): Promise<IDoctor> {
+    return Doctor.findOne({ [key]: value });
   }
 }
 

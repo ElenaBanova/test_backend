@@ -1,9 +1,6 @@
 interface ClinicInfo {
   name: string;
-}
-
-interface Med_ServiceInf {
-  name: string;
+  med_Services: string[];
 }
 
 export interface IDoctorGen {
@@ -11,6 +8,5 @@ export interface IDoctorGen {
   surname: string;
   phoneNumber: string;
   email: string;
-  clinicInfo: ClinicInfo;
-  med_ServiceInfo: Med_ServiceInf[];
+  clinics: ClinicInfo[];
 }

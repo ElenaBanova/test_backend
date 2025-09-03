@@ -2,12 +2,12 @@ import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { ApiError } from "../errors/api.errors";
 import {
   IDoctor,
-  IDoctorCreateDTO,
+  // IDoctorCreateDTO,
+  IDoctorCreateOrUpdate,
   IDoctorQuery,
 } from "../interfaces/doctor.interface";
-import { IDoctorGen } from "../interfaces/IDoctorGen";
+import { IDoctorGen } from "../interfaces/IDoctorGen.interface";
 import { doctorRepository } from "../repositories/doctor.repository";
-import { clinicService } from "./clinic.service";
 
 class DoctorService {
   public getAll(query: IDoctorQuery): Promise<IDoctor[]> {
@@ -18,20 +18,14 @@ class DoctorService {
     return doctorRepository.getAllGen(query);
   }
 
-  public async create(doctor: IDoctorCreateDTO, _id: string): Promise<IDoctor> {
-    const clinic = await clinicService.getById(_id);
-    if (!clinic) {
-      throw new ApiError("Clinic not found", StatusCodesEnum.NOT_FOUND);
-    }
-
-    const obj = { ...doctor, _clinicId: _id };
-
-    return await doctorRepository.create(obj);
+  public async create(doctor: IDoctorCreateOrUpdate): Promise<IDoctor> {
+    await doctorService.isDoctorUnique("email", doctor.email);
+    return await doctorRepository.create(doctor);
   }
 
   public async updateById(
     id: string,
-    doctor: IDoctorCreateDTO,
+    doctor: IDoctorCreateOrUpdate,
   ): Promise<IDoctor> {
     const doc = await doctorRepository.getById(id);
     if (!doc) {
@@ -54,6 +48,17 @@ class DoctorService {
       throw new ApiError(`Doctor not found`, StatusCodesEnum.NOT_FOUND);
     }
     return await doctorRepository.deleteById(id);
+  }
+
+  public async isDoctorUnique(key: string, value: string): Promise<void> {
+    const doctor = await doctorRepository.getByOne(key, value);
+
+    if (doctor) {
+      throw new ApiError(
+        `Doctor is already exists`,
+        StatusCodesEnum.BAD_REQUEST,
+      );
+    }
   }
 }
 

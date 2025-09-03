@@ -1,6 +1,6 @@
 import { FilterQuery } from "mongoose";
 
-import { IMedServiceGen } from "../interfaces/IMedServiceGen";
+import { IMedServiceGen } from "../interfaces/IMedServiceGen.interface";
 import {
   IMedService,
   IMedServiceCreateDTO,
@@ -44,38 +44,51 @@ class MedService_Repository {
       },
       {
         $lookup: {
-          from: "doctors",
-          localField: "_doctorId",
-          foreignField: "_id",
-          as: "doctorInfo",
+          from: "complexes",
+          localField: "_id",
+          foreignField: "_medServiceId",
+          as: "med_Service",
         },
       },
-
+      {
+        $lookup: {
+          from: "doctors",
+          localField: "med_Service._doctorId",
+          foreignField: "_id",
+          as: "doctors",
+        },
+      },
       {
         $lookup: {
           from: "clinics",
-          localField: "doctorInfo._clinicId",
+          localField: "med_Service._clinicId",
           foreignField: "_id",
-          as: "clinicInfo",
+          as: "clinics",
         },
-      },
-      {
-        $unwind: "$doctorInfo",
       },
       {
         $project: {
           _id: 0,
-          _doctorId: 0,
-          createdAt: 0,
-          updatedAt: 0,
-          "doctorInfo._id": 0,
-          "doctorInfo.createdAt": 0,
-          "doctorInfo.updatedAt": 0,
-          "doctorInfo._clinicId": 0,
-          "med_ServiceInfo._id": 0,
-          "med_ServiceInfo._doctorId": 0,
-          "med_ServiceInfo.createdAt": 0,
-          "med_ServiceInfo.updatedAt": 0,
+          name: 1,
+          doctors: {
+            $map: {
+              input: "$doctors",
+              as: "d",
+              in: {
+                name: "$$d.name",
+                surname: "$$d.surname",
+                phoneNumber: "$$d.phoneNumber",
+                email: "$$d.email",
+                clinics: {
+                  $map: {
+                    input: "$clinics",
+                    as: "c",
+                    in: "$$c.name",
+                  },
+                },
+              },
+            },
+          },
         },
       },
     ]);
@@ -98,6 +111,10 @@ class MedService_Repository {
 
   public deleteById(id: string): Promise<void> {
     return MedService.findByIdAndDelete(id);
+  }
+
+  public getByName(name: string): Promise<IMedService> {
+    return MedService.findOne({ name });
   }
 }
 

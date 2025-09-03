@@ -5,7 +5,7 @@ import {
   IClinicCreateDTO,
   IClinicQuery,
 } from "../interfaces/clinic.interface";
-import { IClinicGen } from "../interfaces/IClinicGen";
+import { IClinicGen } from "../interfaces/IClinicGen.interface";
 import { Clinic } from "../models/clinic.models";
 
 class ClinicRepository {
@@ -21,11 +21,13 @@ class ClinicRepository {
 
   public getAllGen(query: IClinicQuery): Promise<IClinicGen[]> {
     const filterObject: FilterQuery<IClinic> = {};
+
     if (query.name) {
       filterObject.name = { $regex: query.name, $options: "i" };
     }
 
     const orderObject = {};
+
     if (query.order) {
       if (query.order.startsWith("-")) {
         orderObject[query.order.slice(1)] = -1;
@@ -43,35 +45,51 @@ class ClinicRepository {
       },
       {
         $lookup: {
-          from: "doctors",
+          from: "complexes",
           localField: "_id",
           foreignField: "_clinicId",
-          as: "doctorInfo",
+          as: "clinic",
+        },
+      },
+      {
+        $lookup: {
+          from: "doctors",
+          localField: "clinic._doctorId",
+          foreignField: "_id",
+          as: "doctors",
         },
       },
       {
         $lookup: {
           from: "medservices",
-          localField: "doctorInfo._id",
-          foreignField: "_doctorId",
-          as: "med_ServiceInfo",
+          localField: "clinic._medServiceId",
+          foreignField: "_id",
+          as: "med_Services",
         },
-      },
-      {
-        $unwind: "$doctorInfo",
       },
       {
         $project: {
           _id: 0,
-          createdAt: 0,
-          updatedAt: 0,
-          "doctorInfo._id": 0,
-          "doctorInfo._clinicId": 0,
-          "doctorInfo.createdAt": 0,
-          "doctorInfo.updatedAt": 0,
-          "med_ServiceInfo._id": 0,
-          "med_ServiceInfo.createdAt": 0,
-          "med_ServiceInfo.updatedAt": 0,
+          name: 1,
+          doctors: {
+            $map: {
+              input: "$doctors",
+              as: "d",
+              in: {
+                name: "$$d.name",
+                surname: "$$d.surname",
+                phoneNumber: "$$d.phoneNumber",
+                email: "$$d.email",
+                med_Services: {
+                  $map: {
+                    input: "$med_Services",
+                    as: "m",
+                    in: "$$m.name",
+                  },
+                },
+              },
+            },
+          },
         },
       },
     ]);
@@ -91,6 +109,10 @@ class ClinicRepository {
 
   public deleteById(id: string): Promise<void> {
     return Clinic.findByIdAndDelete(id);
+  }
+
+  public getByName(name: string): Promise<IClinic> {
+    return Clinic.findOne({ name });
   }
 }
 

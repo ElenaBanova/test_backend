@@ -3,14 +3,10 @@ interface DoctorInfo {
   surname: string;
   phoneNumber: string;
   email: string;
-}
-
-interface Med_ServiceInf {
-  name: string;
+  clinics: string[];
 }
 
 export interface IMedServiceGen {
   name: string;
-  doctorInfo: DoctorInfo;
-  clinicInfo: Med_ServiceInf[];
+  doctors: DoctorInfo[];
 }

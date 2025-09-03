@@ -6,7 +6,6 @@ interface IDoctor extends IBase {
   surname: string;
   phoneNumber: string;
   email: string;
-  _clinicId: string;
 }
 
 interface IDoctorQuery {
@@ -17,14 +16,9 @@ interface IDoctorQuery {
   order?: string;
 }
 
-type IDoctorCreateDTO = Pick<
-  IDoctor,
-  "name" | "surname" | "phoneNumber" | "email" | "_clinicId"
->;
-
-type IDoctorUpdate = Pick<
+type IDoctorCreateOrUpdate = Pick<
   IDoctor,
   "name" | "surname" | "phoneNumber" | "email"
 >;
 
-export { IDoctor, IDoctorCreateDTO, IDoctorQuery, IDoctorUpdate };
+export { IDoctor, IDoctorCreateOrUpdate, IDoctorQuery };

@@ -31,6 +31,10 @@ const swaggerDocument: OpenAPIV3.Document = {
       name: "Medical Service",
       description: "Medical Service endpoint",
     },
+    {
+      name: "Complex Card",
+      description: "Complex Card endpoint",
+    },
   ],
   paths: {
     "/auth/sign-up": {
@@ -476,7 +480,7 @@ const swaggerDocument: OpenAPIV3.Document = {
       },
     },
     "/clinics/{clinicId}": {
-      patch: {
+      put: {
         tags: ["Clinic"],
         summary: "Update clinic by Id",
         security: [{ bearerAuth: [] }],
@@ -604,21 +608,21 @@ const swaggerDocument: OpenAPIV3.Document = {
                     type: "object",
                     properties: {
                       name: { type: "string" },
-                      doctorInfo: {
-                        type: "object",
-                        properties: {
-                          name: { type: "string" },
-                          surname: { type: "string" },
-                          phoneNumber: { type: "string" },
-                          email: { type: "string" },
-                        },
-                      },
-                      med_ServiceInfo: {
+                      doctors: {
                         type: "array",
                         items: {
                           type: "object",
                           properties: {
                             name: { type: "string" },
+                            surname: { type: "string" },
+                            phoneNumber: { type: "string" },
+                            email: { type: "string" },
+                            med_Services: {
+                              type: "array",
+                              items: {
+                                type: "string",
+                              },
+                            },
                           },
                         },
                       },
@@ -638,18 +642,6 @@ const swaggerDocument: OpenAPIV3.Document = {
         security: [{ bearerAuth: [] }],
         description:
           "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
-        requestBody: {
-          content: {
-            "application json": {
-              schema: {
-                type: "object",
-                properties: {
-                  clinicId: { type: "string", format: "clinicID" },
-                },
-              },
-            },
-          },
-        },
         parameters: [
           {
             name: "name",
@@ -697,10 +689,54 @@ const swaggerDocument: OpenAPIV3.Document = {
                       surname: { type: "string" },
                       phoneNumber: { type: "string" },
                       email: { type: "string" },
-                      _clinicId: { type: "string" },
                       createdAt: { type: "string" },
                       updatedAt: { type: "string" },
                     },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      post: {
+        tags: ["Doctor"],
+        summary: "Create new doctor",
+        security: [{ bearerAuth: [] }],
+        description:
+          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
+        requestBody: {
+          required: true,
+          content: {
+            "application json": {
+              schema: {
+                type: "object",
+                properties: {
+                  name: { type: "string", format: "name" },
+                  surname: { type: "string", format: "surname" },
+                  phoneNumber: { type: "string", format: "phoneNumber" },
+                  email: { type: "string", format: "email" },
+                },
+                required: ["name", "surname", "phoneNumber", "email"],
+              },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "Created new doctor",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    _id: { type: "string" },
+                    name: { type: "string" },
+                    surname: { type: "string" },
+                    phoneNumber: { type: "string" },
+                    email: { type: "string" },
+                    createdAt: { type: "string" },
+                    updatedAt: { type: "string" },
                   },
                 },
               },
@@ -714,18 +750,6 @@ const swaggerDocument: OpenAPIV3.Document = {
         tags: ["Doctor"],
         summary: "Get all doctors with pagination and filters",
         security: [{ bearerAuth: [] }],
-        requestBody: {
-          content: {
-            "application json": {
-              schema: {
-                type: "object",
-                properties: {
-                  clinicId: { type: "string", format: "clinicID" },
-                },
-              },
-            },
-          },
-        },
         parameters: [
           {
             name: "name",
@@ -772,18 +796,18 @@ const swaggerDocument: OpenAPIV3.Document = {
                       surname: { type: "string" },
                       phoneNumber: { type: "string" },
                       email: { type: "string" },
-                      ClinicInfo: {
-                        type: "object",
-                        properties: {
-                          name: { type: "string" },
-                        },
-                      },
-                      Med_ServiceInf: {
+                      clinics: {
                         type: "array",
                         items: {
                           type: "object",
                           properties: {
                             name: { type: "string" },
+                            med_Services: {
+                              type: "array",
+                              items: {
+                                type: "string",
+                              },
+                            },
                           },
                         },
                       },
@@ -797,62 +821,7 @@ const swaggerDocument: OpenAPIV3.Document = {
       },
     },
     "/doctors/{isId}": {
-      post: {
-        tags: ["Doctor"],
-        summary: "Create new doctor",
-        security: [{ bearerAuth: [] }],
-        description:
-          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
-        requestBody: {
-          required: true,
-          content: {
-            "application json": {
-              schema: {
-                type: "object",
-                properties: {
-                  name: { type: "string", format: "name" },
-                  surname: { type: "string", format: "surname" },
-                  phoneNumber: { type: "string", format: "phoneNumber" },
-                  email: { type: "string", format: "email" },
-                },
-                required: ["name", "surname", "phoneNumber", "email"],
-              },
-            },
-          },
-        },
-        parameters: [
-          {
-            name: "isId : clinicId",
-            in: "path",
-            description: "Adding clinic data",
-            required: true,
-            schema: { type: "string" },
-          },
-        ],
-        responses: {
-          "200": {
-            description: "Created new doctor",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    _id: { type: "string" },
-                    name: { type: "string" },
-                    surname: { type: "string" },
-                    phoneNumber: { type: "string" },
-                    email: { type: "string" },
-                    _clinicId: { type: "string" },
-                    createdAt: { type: "string" },
-                    updatedAt: { type: "string" },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      put: {
+      patch: {
         tags: ["Doctor"],
         summary: "Update doctor",
         security: [{ bearerAuth: [] }],
@@ -877,7 +846,7 @@ const swaggerDocument: OpenAPIV3.Document = {
           {
             name: "isId : doctorId",
             in: "path",
-            description: "Update doctor id",
+            description: "Get by id doctor",
             required: true,
             schema: { type: "string" },
           },
@@ -895,7 +864,6 @@ const swaggerDocument: OpenAPIV3.Document = {
                     surname: { type: "string" },
                     phoneNumber: { type: "string" },
                     email: { type: "string" },
-                    _clinicId: { type: "string" },
                     createdAt: { type: "string" },
                     updatedAt: { type: "string" },
                   },
@@ -933,7 +901,6 @@ const swaggerDocument: OpenAPIV3.Document = {
                     surname: { type: "string" },
                     phoneNumber: { type: "string" },
                     email: { type: "string" },
-                    _clinicId: { type: "string" },
                     createdAt: { type: "string" },
                     updatedAt: { type: "string" },
                   },
@@ -968,18 +935,6 @@ const swaggerDocument: OpenAPIV3.Document = {
         security: [{ bearerAuth: [] }],
         description:
           "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
-        requestBody: {
-          content: {
-            "application json": {
-              schema: {
-                type: "object",
-                properties: {
-                  doctorId: { type: "string", format: "doctorID" },
-                },
-              },
-            },
-          },
-        },
         parameters: [
           {
             name: "name",
@@ -1006,10 +961,48 @@ const swaggerDocument: OpenAPIV3.Document = {
                     properties: {
                       _id: { type: "string" },
                       name: { type: "string" },
-                      _doctorId: { type: "string" },
                       createdAt: { type: "string" },
                       updatedAt: { type: "string" },
                     },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      post: {
+        tags: ["Medical Service"],
+        summary: "Create new medical service",
+        security: [{ bearerAuth: [] }],
+        description:
+          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
+        requestBody: {
+          required: true,
+          content: {
+            "application json": {
+              schema: {
+                type: "object",
+                properties: {
+                  name: { type: "string", format: "name" },
+                },
+                required: ["name"],
+              },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "Created new medical service",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    _id: { type: "string" },
+                    name: { type: "string" },
+                    createdAt: { type: "string" },
+                    updatedAt: { type: "string" },
                   },
                 },
               },
@@ -1088,56 +1081,6 @@ const swaggerDocument: OpenAPIV3.Document = {
       },
     },
     "/services/{idId}": {
-      post: {
-        tags: ["Medical Service"],
-        summary: "Create new medical service",
-        security: [{ bearerAuth: [] }],
-        description:
-          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
-        requestBody: {
-          required: true,
-          content: {
-            "application json": {
-              schema: {
-                type: "object",
-                properties: {
-                  name: { type: "string", format: "name" },
-                  doctorId: { type: "string", format: "doctorId" },
-                },
-                required: ["name", "doctorId"],
-              },
-            },
-          },
-        },
-        parameters: [
-          {
-            name: "idId : doctorId",
-            in: "path",
-            description: "Adding doctor data",
-            required: true,
-            schema: { type: "string" },
-          },
-        ],
-        responses: {
-          "200": {
-            description: "Created new medical service",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    _id: { type: "string" },
-                    name: { type: "string" },
-                    _doctorId: { type: "string" },
-                    createdAt: { type: "string" },
-                    updatedAt: { type: "string" },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
       put: {
         tags: ["Medical Service"],
         summary: "Update medical service",
@@ -1175,7 +1118,6 @@ const swaggerDocument: OpenAPIV3.Document = {
                   properties: {
                     _id: { type: "string" },
                     name: { type: "string" },
-                    _doctorId: { type: "string" },
                     createdAt: { type: "string" },
                     updatedAt: { type: "string" },
                   },
@@ -1194,8 +1136,9 @@ const swaggerDocument: OpenAPIV3.Document = {
         parameters: [
           {
             name: "idId : serviceId",
-            in: "query",
+            in: "path",
             description: "Get by id medical service",
+            required: true,
             schema: { type: "string" },
           },
         ],
@@ -1209,7 +1152,6 @@ const swaggerDocument: OpenAPIV3.Document = {
                   properties: {
                     _id: { type: "string" },
                     name: { type: "string" },
-                    _doctorId: { type: "string" },
                     createdAt: { type: "string" },
                     updatedAt: { type: "string" },
                   },
@@ -1228,8 +1170,226 @@ const swaggerDocument: OpenAPIV3.Document = {
         parameters: [
           {
             name: "idId : serviceId",
-            in: "query",
+            in: "path",
             description: "Delete by id medical service",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        responses: {},
+      },
+    },
+    "/complex": {
+      get: {
+        tags: ["Complex Card"],
+        summary: "Get all complex cards",
+        security: [{ bearerAuth: [] }],
+        description:
+          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
+        parameters: [
+          {
+            name: "_clinicId",
+            in: "query",
+            description: "Search by clinic id",
+            schema: { type: "string" },
+          },
+          {
+            name: "_doctorId",
+            in: "query",
+            description: "Search by doctor id",
+            schema: { type: "string" },
+          },
+          {
+            name: "_medServiceId",
+            in: "query",
+            description: "Search by medical service id",
+            schema: { type: "string" },
+          },
+        ],
+        responses: {
+          "200": {
+            description: "List of complex cards",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      _id: { type: "string" },
+                      name: { type: "string" },
+                      doctorName: { type: "string" },
+                      doctorSurname: { type: "string" },
+                      doctorPhoneNumber: { type: "string" },
+                      doctorEmail: { type: "string" },
+                      medServiceName: { type: "string" },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/complex/{idCl}/{idDoc}/{idServ}": {
+      post: {
+        tags: ["Complex Card"],
+        summary: "Create new complex card",
+        security: [{ bearerAuth: [] }],
+        description:
+          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
+        parameters: [
+          {
+            name: "idCl : _clinicId",
+            in: "path",
+            description: "Add a clinic to the complex card",
+            required: true,
+            schema: { type: "string" },
+          },
+          {
+            name: "idDoc : _doctorId",
+            in: "path",
+            description: "Add a doctor to the complex card",
+            required: true,
+            schema: { type: "string" },
+          },
+          {
+            name: "idServ : _medServiceId",
+            in: "path",
+            description: "Add a medical service to the complex card",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Created new complex card",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    _id: { type: "string" },
+                    name: { type: "string" },
+                    doctorName: { type: "string" },
+                    doctorSurname: { type: "string" },
+                    doctorPhoneNumber: { type: "string" },
+                    doctorEmail: { type: "string" },
+                    medServiceName: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/complex/{id}": {
+      get: {
+        tags: ["Complex Card"],
+        summary: "Get complex card by id",
+        security: [{ bearerAuth: [] }],
+        description:
+          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            description: "Get complex card by id",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Complex card by id",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    _id: { type: "string" },
+                    name: { type: "string" },
+                    doctorName: { type: "string" },
+                    doctorSurname: { type: "string" },
+                    doctorPhoneNumber: { type: "string" },
+                    doctorEmail: { type: "string" },
+                    medServiceName: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      patch: {
+        tags: ["Complex Card"],
+        summary: "Update complex card",
+        security: [{ bearerAuth: [] }],
+        description:
+          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            description: "Complex card by id",
+            required: true,
+            schema: { type: "string" },
+          },
+          {
+            name: "_clinicId",
+            in: "query",
+            description: "Update clinic in the complex card",
+            schema: { type: "string" },
+          },
+          {
+            name: "_doctorId",
+            in: "query",
+            description: "Update doctor in the complex card",
+            schema: { type: "string" },
+          },
+          {
+            name: "_medServiceId",
+            in: "query",
+            description: "Update medical service in the complex card",
+            schema: { type: "string" },
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Updated complex card",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    _id: { type: "string" },
+                    name: { type: "string" },
+                    doctorName: { type: "string" },
+                    doctorSurname: { type: "string" },
+                    doctorPhoneNumber: { type: "string" },
+                    doctorEmail: { type: "string" },
+                    medServiceName: { type: "string" },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      delete: {
+        tags: ["Complex Card"],
+        summary: "Delete by id complex card",
+        security: [{ bearerAuth: [] }],
+        description:
+          "Access is only allowed to users with the Admin role, which is taken from tokenPayload.role.",
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            description: "Delete by id complex card",
+            required: true,
             schema: { type: "string" },
           },
         ],

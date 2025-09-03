@@ -4,7 +4,7 @@ import { IClinic } from "../interfaces/clinic.interface";
 
 const clinicSchema = new Schema(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: true, unique: true },
   },
   { timestamps: true, versionKey: false },
 );

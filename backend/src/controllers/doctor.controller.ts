@@ -1,7 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 
 import { StatusCodesEnum } from "../enums/status-codes.enum";
-import { IDoctorCreateDTO, IDoctorQuery } from "../interfaces/doctor.interface";
+import {
+  IDoctorCreateOrUpdate,
+  IDoctorQuery,
+} from "../interfaces/doctor.interface";
 import { doctorService } from "../services/doctor.service";
 
 class DoctorController {
@@ -27,9 +30,8 @@ class DoctorController {
 
   public async create(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id: _clinicId } = req.params;
-      const doctor = req.body as IDoctorCreateDTO;
-      const data = await doctorService.create(doctor, _clinicId);
+      const doctor = req.body as IDoctorCreateOrUpdate;
+      const data = await doctorService.create(doctor);
       res.status(StatusCodesEnum.CREATED).json(data);
     } catch (e) {
       next(e);
@@ -39,7 +41,7 @@ class DoctorController {
   public async updateById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const clinic = req.body as IDoctorCreateDTO;
+      const clinic = req.body as IDoctorCreateOrUpdate;
       const data = await doctorService.updateById(id, clinic);
       res.status(StatusCodesEnum.OK).json(data);
     } catch (e) {
