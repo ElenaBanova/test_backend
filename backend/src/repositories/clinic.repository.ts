@@ -5,7 +5,9 @@ import {
   IClinicCreateDTO,
   IClinicQuery,
 } from "../interfaces/clinic.interface";
+import { IDoctor } from "../interfaces/doctor.interface";
 import { IClinicGen } from "../interfaces/IClinicGen.interface";
+import { IMedService } from "../interfaces/med_service.interface";
 import { Clinic } from "../models/clinic.models";
 
 class ClinicRepository {
@@ -26,6 +28,42 @@ class ClinicRepository {
       filterObject.name = { $regex: query.name, $options: "i" };
     }
 
+    const doctorFilterObject: FilterQuery<IDoctor> = {};
+
+    if (query.doctorName) {
+      doctorFilterObject["doctor.name"] = {
+        $regex: query.doctorName,
+        $options: "i",
+      };
+    }
+    if (query.doctorSurname) {
+      doctorFilterObject["doctor.surname"] = {
+        $regex: query.doctorSurname,
+        $options: "i",
+      };
+    }
+    if (query.phoneNumber) {
+      doctorFilterObject["doctor.phoneNumber"] = {
+        $regex: query.phoneNumber,
+        $options: "i",
+      };
+    }
+    if (query.email) {
+      doctorFilterObject["doctor.email"] = {
+        $regex: query.email,
+        $options: "i",
+      };
+    }
+
+    const medServiceFilterObject: FilterQuery<IMedService> = {};
+
+    if (query.medService) {
+      medServiceFilterObject["medService.name"] = {
+        $regex: query.medService,
+        $options: "i",
+      };
+    }
+
     const orderObject = {};
 
     if (query.order) {
@@ -41,56 +79,91 @@ class ClinicRepository {
         $match: filterObject,
       },
       {
-        $sort: orderObject,
-      },
-      {
         $lookup: {
           from: "complexes",
           localField: "_id",
           foreignField: "_clinicId",
-          as: "clinic",
+          as: "complexes",
         },
       },
+      { $unwind: "$complexes" },
       {
         $lookup: {
           from: "doctors",
-          localField: "clinic._doctorId",
+          localField: "complexes._doctorId",
           foreignField: "_id",
-          as: "doctors",
+          as: "doctor",
         },
       },
+      { $unwind: "$doctor" },
       {
         $lookup: {
           from: "medservices",
-          localField: "clinic._medServiceId",
+          localField: "complexes._medServiceId",
           foreignField: "_id",
-          as: "med_Services",
+          as: "medService",
+        },
+      },
+      { $unwind: "$medService" },
+      {
+        $match: {
+          ...doctorFilterObject,
+          ...medServiceFilterObject,
+        },
+      },
+      // {
+      //   $match: {
+      //     ...(Object.keys(doctorFilterObject).length
+      //       ? [
+      //           { "doctor.name": doctorFilterObject.name },
+      //           { "doctor.surname": doctorFilterObject.surname },
+      //           { "doctor.phoneNumber": doctorFilterObject.phoneNumber },
+      //           { "doctor.email": doctorFilterObject.email },
+      //         ]
+      //       : []),
+      //     ...(Object.keys(medServiceFilterObject).length
+      //       ? [{ "medService.name": medServiceFilterObject.name }]
+      //       : []),
+      //   },
+      // },
+      {
+        $group: {
+          clinicName: { $first: "$name" },
+          _id: {
+            clinicId: "$_id",
+            doctorId: "$doctor._id",
+            doctorName: "$doctor.name",
+            doctorSurname: "$doctor.surname",
+            phoneNumber: "$doctor.phoneNumber",
+            email: "$doctor.email",
+          },
+          medServices: { $addToSet: "$medService.name" },
+        },
+      },
+      {
+        $group: {
+          _id: "$_id.clinicId",
+          clinicName: { $first: "$clinicName" },
+          doctors: {
+            $push: {
+              name: "$_id.doctorName",
+              surname: "$_id.doctorSurname",
+              phoneNumber: "$_id.phoneNumber",
+              email: "$_id.email",
+              med_Services: "$medServices",
+            },
+          },
         },
       },
       {
         $project: {
           _id: 0,
-          name: 1,
-          doctors: {
-            $map: {
-              input: "$doctors",
-              as: "d",
-              in: {
-                name: "$$d.name",
-                surname: "$$d.surname",
-                phoneNumber: "$$d.phoneNumber",
-                email: "$$d.email",
-                med_Services: {
-                  $map: {
-                    input: "$med_Services",
-                    as: "m",
-                    in: "$$m.name",
-                  },
-                },
-              },
-            },
-          },
+          name: "$clinicName",
+          doctors: 1,
         },
+      },
+      {
+        $sort: orderObject,
       },
     ]);
   }

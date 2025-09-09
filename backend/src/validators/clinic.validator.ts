@@ -12,6 +12,11 @@ export class ClinicValidator {
 
   public static query = joi.object({
     name: joi.string().trim(),
+    doctorName: joi.string().trim(),
+    doctorSurname: joi.string().trim(),
+    phoneNumber: joi.string().trim(),
+    email: joi.string().trim(),
+    medService: joi.string().trim(),
     order: joi
       .string()
       .valid(BaseQueryOrderEnum.NAME, `-${BaseQueryOrderEnum.NAME}`),

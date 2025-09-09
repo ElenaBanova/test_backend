@@ -7,6 +7,11 @@ interface IClinic extends IBase {
 
 interface IClinicQuery {
   name?: string;
+  doctorName?: string;
+  doctorSurname?: string;
+  phoneNumber?: string;
+  email?: string;
+  medService?: string;
   order?: string;
 }
 

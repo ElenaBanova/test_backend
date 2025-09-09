@@ -65,56 +65,73 @@ class DoctorRepository {
         $match: filterObjectGen,
       },
       {
-        $sort: orderObject,
-      },
-      {
         $lookup: {
           from: "complexes",
           localField: "_id",
           foreignField: "_doctorId",
-          as: "doctor",
+          as: "complexes",
         },
       },
+      { $unwind: "$complexes" },
       {
         $lookup: {
           from: "clinics",
-          localField: "doctor._clinicId",
+          localField: "complexes._clinicId",
           foreignField: "_id",
-          as: "clinics",
+          as: "clinic",
         },
       },
+      { $unwind: "$clinic" },
       {
         $lookup: {
           from: "medservices",
-          localField: "doctor._medServiceId",
+          localField: "complexes._medServiceId",
           foreignField: "_id",
-          as: "med_Services",
+          as: "med_Service",
+        },
+      },
+      { $unwind: "$med_Service" },
+      {
+        $group: {
+          doctorName: { $first: "$name" },
+          doctorSurname: { $first: "$surname" },
+          phoneNumber: { $first: "$phoneNumber" },
+          email: { $first: "$email" },
+          _id: {
+            doctorId: "$_id",
+            clinicId: "$clinic._id",
+            clinicName: "$clinic.name",
+          },
+          medServices: { $addToSet: "$med_Service.name" },
+        },
+      },
+      {
+        $group: {
+          _id: "$_id.doctorId",
+          doctorName: { $first: "$doctorName" },
+          doctorSurname: { $first: "$doctorSurname" },
+          phoneNumber: { $first: "$phoneNumber" },
+          email: { $first: "$email" },
+          clinics: {
+            $push: {
+              name: "$_id.clinicName",
+              med_Services: "$medServices",
+            },
+          },
         },
       },
       {
         $project: {
           _id: 0,
-          name: 1,
-          surname: 1,
-          phoneNumber: 1,
-          email: 1,
-          clinics: {
-            $map: {
-              input: "$clinics",
-              as: "c",
-              in: {
-                name: "$$c.name",
-                med_Services: {
-                  $map: {
-                    input: "$med_Services",
-                    as: "m",
-                    in: "$$m.name",
-                  },
-                },
-              },
-            },
-          },
+          name: "$doctorName",
+          surname: "$doctorSurname",
+          phoneNumber: "$phoneNumber",
+          email: "$email",
+          clinics: 1,
         },
+      },
+      {
+        $sort: orderObject,
       },
     ]);
   }
