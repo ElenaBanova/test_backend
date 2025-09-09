@@ -42,7 +42,7 @@ Fill in the LIFETIME string in the following format: "20 minutes".
 14. To run the project in the 'bash' terminal, write `docker compose up --build`. Runs from the project root!!!
 
 ### Link to dump mongodb:
-    https://www.dropbox.com/scl/fi/ritkscbwny1hyw50bx41h/mongo_dump.zip?rlkey=3xgj2se5d17yh7sq7w32g4907&dl=0
+    https://www.dropbox.com/scl/fi/v42ynj9csfv26c3lunari/mongo_dump.zip?rlkey=tqs8o1655n3kx4yb0gfvbjp1k&dl=0
 
 Steps to add dump mongodb to project:
 
@@ -70,7 +70,7 @@ Where <_username_> and <_password_> are taken from the .env.db file, which is lo
 6. The database has been restored, let's move on to the next step.
 
 ### Link to postman collection:
-    https://www.dropbox.com/scl/fi/3qnasgh4kmits7v2veop7/test-backend.postman_collection.json?rlkey=oeqi99thalgfnpsq3nfgq6b8o&dl=0
+    https://www.dropbox.com/scl/fi/uq3j2wtxembr6hnjoi0rp/test-backend.postman_collection.json?rlkey=hj4c7gt5zzrjafoypv1q667ek&dl=0
 
 ### Link to postman environment:
     https://www.dropbox.com/scl/fi/m4kz2eyklo3puxs9xjcl9/test-backend.postman_environment.json?rlkey=o2l8g8r8lm2vuuqfbtfqvxawy&dl=0
