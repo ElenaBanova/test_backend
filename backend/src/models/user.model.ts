@@ -26,6 +26,12 @@ const userSchema = new Schema(
         return ret;
       },
     },
+    toObject: {
+      transform: (doc, ret) => {
+        delete ret.password;
+        return ret;
+      },
+    },
   },
 );
 

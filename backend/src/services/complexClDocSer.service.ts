@@ -5,14 +5,14 @@ import {
   IComplexQueryOrUpdate,
 } from "../interfaces/IComplex.interface";
 import { IComplexGetAll } from "../interfaces/IComplexGetAll.interface";
-import { complexClDocSer_Repository } from "../repositories/complexClDocSer.repository";
+import { complexClDocSerRepository } from "../repositories/complexClDocSer.repository";
 import { clinicService } from "./clinic.service";
 import { doctorService } from "./doctor.service";
-import { medService_Service } from "./med-service.service";
+import { medServiceService } from "./med-service.service";
 
-class ComplexClDocSer_Service {
+class ComplexClDocSerService {
   public getAll(query: IComplexQueryOrUpdate): Promise<IComplexGetAll[]> {
-    return complexClDocSer_Repository.getAll(query);
+    return complexClDocSerRepository.getAll(query);
   }
 
   public async create(complexCard: IComplexCreateDTO): Promise<IComplexGetAll> {
@@ -23,11 +23,11 @@ class ComplexClDocSer_Service {
     );
 
     const { _id, _clinicId, _doctorId, _medServiceId } =
-      await complexClDocSer_Repository.create(complexCard);
+      await complexClDocSerRepository.create(complexCard);
 
     const clinic = await clinicService.getById(_clinicId);
     const doctor = await doctorService.getById(_doctorId);
-    const medService = await medService_Service.getById(_medServiceId);
+    const medService = await medServiceService.getById(_medServiceId);
     return {
       _id,
       name: clinic.name,
@@ -40,21 +40,20 @@ class ComplexClDocSer_Service {
   }
 
   public async getById(id: string): Promise<IComplexGetAll> {
-    const complexCardValid = await complexClDocSer_Repository.getById(id);
+    const complexCardValid = await complexClDocSerRepository.getById(id);
 
     if (!complexCardValid) {
       throw new ApiError(`Information not found`, StatusCodesEnum.NOT_FOUND);
     }
 
-    const { _id, _clinicId, _doctorId, _medServiceId } =
-      await complexClDocSer_Repository.getById(id);
-
-    const clinic = await clinicService.getById(_clinicId);
-    const doctor = await doctorService.getById(_doctorId);
-    const medService = await medService_Service.getById(_medServiceId);
+    const clinic = await clinicService.getById(complexCardValid._clinicId);
+    const doctor = await doctorService.getById(complexCardValid._doctorId);
+    const medService = await medServiceService.getById(
+      complexCardValid._medServiceId,
+    );
 
     return {
-      _id,
+      _id: complexCardValid._id,
       name: clinic.name,
       doctorName: doctor.name,
       doctorSurname: doctor.surname,
@@ -68,7 +67,7 @@ class ComplexClDocSer_Service {
     id: string,
     complexCard: IComplexQueryOrUpdate,
   ): Promise<IComplexGetAll> {
-    const card = await complexClDocSer_Repository.getById(id);
+    const card = await complexClDocSerRepository.getById(id);
     if (!card) {
       throw new ApiError(`Information not found`, StatusCodesEnum.NOT_FOUND);
     }
@@ -127,11 +126,11 @@ class ComplexClDocSer_Service {
     }
 
     const { _id, _clinicId, _doctorId, _medServiceId } =
-      await complexClDocSer_Repository.updateById(id, complexCard);
+      await complexClDocSerRepository.updateById(id, complexCard);
 
     const clinic = await clinicService.getById(_clinicId);
     const doctor = await doctorService.getById(_doctorId);
-    const medService = await medService_Service.getById(_medServiceId);
+    const medService = await medServiceService.getById(_medServiceId);
 
     return {
       _id,
@@ -145,11 +144,11 @@ class ComplexClDocSer_Service {
   }
 
   public async deleteById(id: string): Promise<void> {
-    const complexCard = await complexClDocSer_Repository.getById(id);
+    const complexCard = await complexClDocSerRepository.getById(id);
     if (!complexCard) {
       throw new ApiError(`Information not found`, StatusCodesEnum.NOT_FOUND);
     }
-    return await complexClDocSer_Repository.deleteById(id);
+    return await complexClDocSerRepository.deleteById(id);
   }
 
   public async isComplexCardUnique(
@@ -157,12 +156,12 @@ class ComplexClDocSer_Service {
     _doctorId: string,
     _medServiceId: string,
   ): Promise<void> {
-    const complexCard = await complexClDocSer_Repository.getByOneUnique(
+    const complexCard = await complexClDocSerRepository.getByOneUnique(
       _clinicId,
       _doctorId,
       _medServiceId,
     );
-    if (complexCard.length > 0) {
+    if (complexCard) {
       throw new ApiError(
         `A doctor's card already exists in this clinic.`,
         StatusCodesEnum.BAD_REQUEST,
@@ -171,4 +170,4 @@ class ComplexClDocSer_Service {
   }
 }
 
-export const complexClDocSer_Service = new ComplexClDocSer_Service();
+export const complexClDocSerService = new ComplexClDocSerService();

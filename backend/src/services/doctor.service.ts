@@ -19,7 +19,6 @@ class DoctorService {
   }
 
   public async create(doctor: IDoctorCreateOrUpdate): Promise<IDoctor> {
-    await doctorService.isDoctorUnique("email", doctor.email);
     return await doctorRepository.create(doctor);
   }
 
@@ -50,16 +49,16 @@ class DoctorService {
     return await doctorRepository.deleteById(id);
   }
 
-  public async isDoctorUnique(key: string, value: string): Promise<void> {
-    const doctor = await doctorRepository.getByOne(key, value);
-
-    if (doctor) {
-      throw new ApiError(
-        `Doctor is already exists`,
-        StatusCodesEnum.BAD_REQUEST,
-      );
-    }
-  }
+  // public async isDoctorUnique(key: string, value: string): Promise<void> {
+  //   const doctor = await doctorRepository.getByOne(key, value);
+  //
+  //   if (doctor) {
+  //     throw new ApiError(
+  //       `Doctor is already exists`,
+  //       StatusCodesEnum.BAD_REQUEST,
+  //     );
+  //   }
+  // }
 }
 
 export const doctorService = new DoctorService();

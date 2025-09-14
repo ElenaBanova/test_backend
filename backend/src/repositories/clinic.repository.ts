@@ -111,21 +111,6 @@ class ClinicRepository {
           ...medServiceFilterObject,
         },
       },
-      // {
-      //   $match: {
-      //     ...(Object.keys(doctorFilterObject).length
-      //       ? [
-      //           { "doctor.name": doctorFilterObject.name },
-      //           { "doctor.surname": doctorFilterObject.surname },
-      //           { "doctor.phoneNumber": doctorFilterObject.phoneNumber },
-      //           { "doctor.email": doctorFilterObject.email },
-      //         ]
-      //       : []),
-      //     ...(Object.keys(medServiceFilterObject).length
-      //       ? [{ "medService.name": medServiceFilterObject.name }]
-      //       : []),
-      //   },
-      // },
       {
         $group: {
           clinicName: { $first: "$name" },

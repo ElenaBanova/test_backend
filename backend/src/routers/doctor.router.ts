@@ -25,6 +25,7 @@ router.post(
   authMiddleware.checkAccessToken,
   authMiddleware.isAdmin,
   commonMiddleware.validateBody(DoctorValidator.create),
+  commonMiddleware.checkEmailUnique("Doctor", "email"),
   doctorController.create,
 );
 router.patch(

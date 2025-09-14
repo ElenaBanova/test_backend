@@ -18,7 +18,6 @@ class AuthService {
   public async signUp(
     user: IUserCreateDTO,
   ): Promise<{ user: IUser; tokens: ITokenPair }> {
-    await userService.isEmailUnique(user.email);
     const password = await passwordService.hashPassword(user.password);
     const newUser = await userRepository.create({ ...user, password });
     const tokens = tokenService.generateTokens({

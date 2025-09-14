@@ -4,6 +4,13 @@ import { isObjectIdOrHexString } from "mongoose";
 
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { ApiError } from "../errors/api.errors";
+import { Doctor } from "../models/doctor.model";
+import { User } from "../models/user.model";
+
+const modelsMap = {
+  User,
+  Doctor,
+};
 
 class CommonMiddleware {
   public isIdValid(key: string) {
@@ -41,6 +48,25 @@ class CommonMiddleware {
         next();
       } catch (e) {
         next(new ApiError(e.details[0].message, 400));
+      }
+    };
+  }
+
+  public checkEmailUnique(model: string, key: string) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const email = req.body[key];
+        const Model = modelsMap[model];
+        const user = await Model.findOne({ [key]: email });
+        if (user) {
+          throw new ApiError(
+            `User with this email: ${email} already exists`,
+            StatusCodesEnum.BAD_REQUEST,
+          );
+        }
+        next();
+      } catch (e) {
+        next(e);
       }
     };
   }

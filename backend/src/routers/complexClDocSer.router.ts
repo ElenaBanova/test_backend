@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { complexClDocSer_Controller } from "../controllers/complexClDocSer.controller";
+import { complexClDocSerController } from "../controllers/complexClDocSer.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { commonMiddleware } from "../middlewares/common.middleware";
 import { ComplexValidator } from "../validators/complex.validator";
@@ -12,7 +12,7 @@ router.get(
   authMiddleware.checkAccessToken,
   authMiddleware.isAdmin,
   commonMiddleware.query(ComplexValidator.query),
-  complexClDocSer_Controller.getAll,
+  complexClDocSerController.getAll,
 );
 router.post(
   "/:idCl/:idDoc/:idServ",
@@ -21,14 +21,14 @@ router.post(
   commonMiddleware.isIdValid("idCl"),
   commonMiddleware.isIdValid("idDoc"),
   commonMiddleware.isIdValid("idServ"),
-  complexClDocSer_Controller.create,
+  complexClDocSerController.create,
 );
 router.get(
   "/:id",
   authMiddleware.checkAccessToken,
   authMiddleware.isAdmin,
   commonMiddleware.isIdValid("id"),
-  complexClDocSer_Controller.getById,
+  complexClDocSerController.getById,
 );
 router.patch(
   "/:id",
@@ -36,14 +36,14 @@ router.patch(
   authMiddleware.isAdmin,
   commonMiddleware.isIdValid("id"),
   commonMiddleware.query(ComplexValidator.query),
-  complexClDocSer_Controller.updateById,
+  complexClDocSerController.updateById,
 );
 router.delete(
   "/:id",
   authMiddleware.checkAccessToken,
   authMiddleware.isAdmin,
   commonMiddleware.isIdValid("id"),
-  complexClDocSer_Controller.deleteById,
+  complexClDocSerController.deleteById,
 );
 
 export const complexRouter = router;

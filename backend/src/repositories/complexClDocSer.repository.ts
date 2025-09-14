@@ -8,7 +8,7 @@ import {
 import { IComplexGetAll } from "../interfaces/IComplexGetAll.interface";
 import { Complex } from "../models/complexCl&Doc&Ser.models";
 
-class ComplexClDocSer_Repository {
+class ComplexClDocSerRepository {
   public getAll(query: IComplexQueryOrUpdate): Promise<IComplexGetAll[]> {
     const filterObject: FilterQuery<IComplex> = {};
     if (query._clinicId) {
@@ -78,20 +78,13 @@ class ComplexClDocSer_Repository {
     _clinicId: string,
     _doctorId: string,
     _medServiceId: string,
-  ): Promise<string[]> {
+  ): Promise<IComplex> {
     const filterObject: FilterQuery<IComplex> = {
       _clinicId: new Types.ObjectId(_clinicId),
       _doctorId: new Types.ObjectId(_doctorId),
       _medServiceId: new Types.ObjectId(_medServiceId),
     };
-    return Complex.aggregate([
-      {
-        $match: filterObject,
-      },
-      {
-        $project: { _id: 1 },
-      },
-    ]);
+    return Complex.findOne(filterObject._id);
   }
 
   public getById(id: string): Promise<IComplex> {
@@ -110,4 +103,4 @@ class ComplexClDocSer_Repository {
   }
 }
 
-export const complexClDocSer_Repository = new ComplexClDocSer_Repository();
+export const complexClDocSerRepository = new ComplexClDocSerRepository();

@@ -8,7 +8,7 @@ import {
 } from "../interfaces/med_service.interface";
 import { MedService } from "../models/med_service.model";
 
-class MedService_Repository {
+class MedServiceRepository {
   public getAll(query: IMedServiceQuery): Promise<IMedService[]> {
     const filterObject: FilterQuery<IMedService> = {};
 
@@ -132,4 +132,4 @@ class MedService_Repository {
   }
 }
 
-export const medService_Repository = new MedService_Repository();
+export const medServiceRepository = new MedServiceRepository();

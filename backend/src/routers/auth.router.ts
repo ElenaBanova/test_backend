@@ -11,10 +11,15 @@ const router = Router();
 router.post(
   "/sign-up",
   commonMiddleware.validateBody(UserValidator.create),
+  commonMiddleware.checkEmailUnique("User", "email"),
   authController.signUp,
 );
 
-router.post("/sign-in", authController.signIn);
+router.post(
+  "/sign-in",
+  commonMiddleware.validateBody(UserValidator.signIn),
+  authController.signIn,
+);
 router.post(
   "/refresh",
   authMiddleware.checkRefreshToken,

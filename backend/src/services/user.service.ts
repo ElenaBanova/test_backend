@@ -39,13 +39,13 @@ class UserService {
     await userRepository.deleteById(id);
   }
 
-  public async isEmailUnique(email: string): Promise<void> {
-    const user = await userRepository.getByEmail(email);
-
-    if (user) {
-      throw new ApiError("User is already exists", StatusCodesEnum.BAD_REQUEST);
-    }
-  }
+  // public async isEmailUnique(email: string): Promise<void> {
+  //   const user = await userRepository.getByEmail(email);
+  //
+  //   if (user) {
+  //     throw new ApiError("User is already exists", StatusCodesEnum.BAD_REQUEST);
+  //   }
+  // }
 
   public async roleUpdate(id: string): Promise<IUser> {
     const user = await userRepository.getById(id);

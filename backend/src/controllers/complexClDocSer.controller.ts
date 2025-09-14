@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 
 import { StatusCodesEnum } from "../enums/status-codes.enum";
-import { complexClDocSer_Service } from "../services/complexClDocSer.service";
+import { complexClDocSerService } from "../services/complexClDocSer.service";
 
-class ComplexClDocSer_Controller {
+class ComplexClDocSerController {
   public async getAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = await complexClDocSer_Service.getAll(req.query);
+      const data = await complexClDocSerService.getAll(req.query);
       res.status(StatusCodesEnum.OK).json(data);
     } catch (e) {
       next(e);
@@ -20,7 +20,7 @@ class ComplexClDocSer_Controller {
         idDoc: _doctorId,
         idServ: _medServiceId,
       } = req.params;
-      const data = await complexClDocSer_Service.create({
+      const data = await complexClDocSerService.create({
         _clinicId,
         _doctorId,
         _medServiceId,
@@ -34,7 +34,7 @@ class ComplexClDocSer_Controller {
   public async getById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const data = await complexClDocSer_Service.getById(id);
+      const data = await complexClDocSerService.getById(id);
       res.status(StatusCodesEnum.OK).json(data);
     } catch (e) {
       next(e);
@@ -44,7 +44,7 @@ class ComplexClDocSer_Controller {
   public async updateById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const data = await complexClDocSer_Service.updateById(id, req.query);
+      const data = await complexClDocSerService.updateById(id, req.query);
       res.status(StatusCodesEnum.OK).json(data);
     } catch (e) {
       next(e);
@@ -54,7 +54,7 @@ class ComplexClDocSer_Controller {
   public async deleteById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      await complexClDocSer_Service.deleteById(id);
+      await complexClDocSerService.deleteById(id);
       res.status(StatusCodesEnum.NO_CONTENT).end();
     } catch (e) {
       next(e);
@@ -62,4 +62,4 @@ class ComplexClDocSer_Controller {
   }
 }
 
-export const complexClDocSer_Controller = new ComplexClDocSer_Controller();
+export const complexClDocSerController = new ComplexClDocSerController();
